@@ -4,6 +4,7 @@ const searchInput = document.getElementById("search-input");
 const ul = document.querySelector("ul"); 
 
 
+
 // Button submits input 
 function getApi(event) { 
     
@@ -13,6 +14,11 @@ function getApi(event) {
 
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${searchContent}&units=imperial&appid=fb2d2fe09203827547fcf79ecc2852af`;
     
+    // const otherForecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={part}&appid=fb2d2fe09203827547fcf79ecc2852af`; 
+    
+    // var lat = data.lat; 
+    // var long = 
+
     
     fetch(currentUrl)
     .then(function (response) {
@@ -33,6 +39,11 @@ function getApi(event) {
     }) 
 
 }
+
+// function findCity(userCity) {
+
+// }
+
 // List previous searches 
 // function displaySearches(){}
 var searchHistory = document.getElementById("search-history"); 
@@ -54,27 +65,27 @@ function onButtonClick() {
 }
 
 function generateCurrentWeather(data) {
-    const cardBody = $('<div>').addClass('card-body');
+    // Formats card 
+    const cardBody = $('<div>').addClass('card-body').addClass("rounded");
+    // Assigns variables to data from API and adds to cards
     const city = $('<h2>').addClass('card-title').text(data.name);
-    const description = $('<p>').addClass("card-text").text(data.weather[0].description);
-
-   let icon = data.weather[0].icon;
-    
+    const description = $('<p>').addClass("card-text").text(data.weather[0].description); 
+    const icon = data.weather[0].icon;
     const img = new Image(); 
     img.src = "http://openweathermap.org/img/wn/" + icon + "@2x.png"; 
     const temp = $("<p>").addClass("card-text").text("Temperature: " + Math.floor(data.main.temp) + "°F"); 
     const humidity = $("<p>").addClass("card-text").text("Humidity: " + (data.main.humidity) + "%"); 
     const windSpeed = $("<p>").addClass("card-text").text("Wind Speed: " + data.wind.speed + " MPH"); 
-
-    cardBody.append(today); 
+    // Writes card to page 
+    cardBody.append(today.toDateString()); 
     cardBody.append(city);
-    cardBody.append(img); 
     cardBody.append(description);
+    cardBody.append(img); 
     cardBody.append(temp); 
     cardBody.append(humidity); 
     cardBody.append(windSpeed); 
-    
-    const card = $('<div>').addClass('card').addClass('rounded').addClass('bg-primary');
+    // Generates card
+    const card = $('<div>').addClass('card').addClass("shadow-lg");
   
     card.append(cardBody);
     
@@ -84,31 +95,39 @@ function generateCurrentWeather(data) {
 
 
 }
-
+// Generates 5-day forecast
 function generateForecast(data) {
 
     for (i = 0; i < 5; i++) {
 
-
+        // Sets dates for next 5 days 
         const futureDate = new Date(today);
         const dateFormat = {year: "numeric", month: "numeric", day: "numeric"};
         futureDate.setDate(today.getDate() + i);
         const weekDay = `${futureDate.toLocaleDateString("en-US", {weekday: "long"})} ${futureDate.toLocaleDateString("en-US", dateFormat)}`
-
-        const cardBody = $('<div>').addClass('card-body').addClass('bg-primary').addClass('w-70').addClass('rounded').addClass('mr-5');
         const dayOfWeek = $('<div>').addClass('card-title').text(weekDay)
-         
+        // Formats cards for 5-day forecast
+        const cardBody = $('<div>').addClass('card-body').addClass('bg-00ffff w-70 rounded')
+        // Assigns variables to data from API and adds to cards 
         const description = $('<p>').addClass("card-text").text(data.list[i].description);
+        
+        var icon = data.list[i].weather[0].icon;
+        var img = new Image(); 
+        img.src = "http://openweathermap.org/img/wn/" + icon + "@2x.png"; 
+
         const temp = $("<p>").addClass("card-text").text("Temperature: " + Math.floor(data.list[i].main.temp) + "°F"); 
         const humidity = $("<p>").addClass("card-text").text("Humidity: " + (data.list[i].main.humidity) + "%"); 
        
+        // Writes cards to page 
         cardBody.append(dayOfWeek); 
         cardBody.append(description);
+        cardBody.append(img); 
         cardBody.append(temp); 
         cardBody.append(humidity); 
         
-
-        const card = $('<div>').addClass('card');
+        
+        // Formats cards
+        const card = $('<div>').addClass('card').addClass("mr-3 shadow-lg");
 
         card.append(cardBody);
         
