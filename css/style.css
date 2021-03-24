@@ -2,11 +2,10 @@ header {
     text-align: center; 
     padding: 20px; 
     color: white; 
-    background-color:midnightblue; 
+    background-color:dimgray; 
 }
 
 .left-column {
-    text-align: left; 
     margin: 25px; 
 }
 
@@ -15,13 +14,20 @@ header {
 }
 
 #weather-div {
+    align-items: center;
+    justify-content: center;
     display: flex; 
-    margin: 30px;
 }
 
 #forecast-div {
-   display: flex; 
-   padding: 20px; 
+    align-items: center;
+    justify-content: center;
+    display: flex; 
+    padding: 20px; 
+}
+
+.blue {
+    background-color: #b2f7f7; 
 }
 
 

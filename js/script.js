@@ -1,11 +1,12 @@
+// placement of shit
+// local storage and search list 
 
 const today = new Date();  
 const searchInput = document.getElementById("search-input");
 const ul = document.querySelector("ul"); 
 
 
-
-// Button submits input 
+// Call APIs 
 function getApi(event) { 
     
     const searchContent = searchInput.value.trim();
@@ -14,18 +15,12 @@ function getApi(event) {
 
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${searchContent}&units=imperial&appid=fb2d2fe09203827547fcf79ecc2852af`;
     
-    // const otherForecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={part}&appid=fb2d2fe09203827547fcf79ecc2852af`; 
-    
-    // var lat = data.lat; 
-    // var long = 
-
     
     fetch(currentUrl)
     .then(function (response) {
         return response.json();
     })
     .then(function(data) {
-        console.log(data); 
         generateCurrentWeather(data); 
     }) 
 
@@ -34,39 +29,37 @@ function getApi(event) {
         return response.json();
     })
     .then(function(data) {
-        console.log(data); 
         generateForecast(data); 
     }) 
 
 }
-
-// function findCity(userCity) {
-
-// }
-
 // List previous searches 
-// function displaySearches(){}
 var searchHistory = document.getElementById("search-history"); 
-searchHistory.innerHTML = localStorage.getItem("Searches") || []; 
+
+function displaySearches() {
+    searchHistory.innerHTML = (JSON.parse(localStorage.getItem("Searches")) || []).map(function(searchItem) {
+        return '<li class="list-group-item">' + searchItem + '</li>'; 
+    }).join(""); 
+}
 
 const submitButton = document.querySelector(".btn").addEventListener("click", onButtonClick);
 
-let searchArray = []; 
-
 function addSearch() {
+    let searchArray = JSON.parse(localStorage.getItem("Searches")) || []; 
     var searchContent = searchInput.value;
-    searchArray.push(searchContent)   
-    localStorage.setItem("Searches", searchArray);
+    searchArray.push(searchContent);    
+    localStorage.setItem("Searches", JSON.stringify(searchArray));
 }
-
+// On button click, run these functions 
 function onButtonClick() {
     getApi(); 
     addSearch(); 
+    displaySearches();
 }
-
+// Generates current weather card 
 function generateCurrentWeather(data) {
     // Formats card 
-    const cardBody = $('<div>').addClass('card-body').addClass("rounded");
+    const cardBody = $('<div>').addClass('card-body').addClass("card rounded blue");
     // Assigns variables to data from API and adds to cards
     const city = $('<h2>').addClass('card-title').text(data.name);
     const description = $('<p>').addClass("card-text").text(data.weather[0].description); 
@@ -76,28 +69,30 @@ function generateCurrentWeather(data) {
     const temp = $("<p>").addClass("card-text").text("Temperature: " + Math.floor(data.main.temp) + "°F"); 
     const humidity = $("<p>").addClass("card-text").text("Humidity: " + (data.main.humidity) + "%"); 
     const windSpeed = $("<p>").addClass("card-text").text("Wind Speed: " + data.wind.speed + " MPH"); 
-    // Writes card to page 
+    // Generates card
+    cardBody.append(city); 
     cardBody.append(today.toDateString()); 
-    cardBody.append(city);
     cardBody.append(description);
     cardBody.append(img); 
     cardBody.append(temp); 
     cardBody.append(humidity); 
     cardBody.append(windSpeed); 
-    // Generates card
-    const card = $('<div>').addClass('card').addClass("shadow-lg");
   
+    const card = $('<div>').addClass('card').addClass("shadow-lg");
     card.append(cardBody);
     
-
+    // Writes card to page 
     const weatherDiv = $('#weather-div');
+    // Clears previous search content 
+    weatherDiv.empty(); 
     weatherDiv.append(card);
-
-
 }
 // Generates 5-day forecast
 function generateForecast(data) {
-
+    const forecastDiv = $("#forecast-div"); 
+    // Clears previous search content 
+    forecastDiv.empty(); 
+    
     for (i = 0; i < 5; i++) {
 
         // Sets dates for next 5 days 
@@ -127,35 +122,12 @@ function generateForecast(data) {
         
         
         // Formats cards
-        const card = $('<div>').addClass('card').addClass("mr-3 shadow-lg");
-
+        const card = $('<div>').addClass('card').addClass("mr-3 shadow-lg blue");
+        // Writes card to page 
         card.append(cardBody);
-        
-        const forecastDiv = $("#forecast-div"); 
         forecastDiv.append(card); 
 
     }
 }
-
-// function generateCurrent(data) {
-//     const div = $("<div>"); 
-//     const city = $("<h5>").text(data.name); 
-//     const description = $("<p>").text(data.weather[0].description); 
-//     const temp = $("<p>").text(data.main.temp); 
-//     const humidity = $("<p>").text(data.main.humidity); 
-//     const windSpeed = $("<p>").text(data.wind.speed); 
-  
-//     // const date;         
-//     // const uvIndex; 
-//     // const wColor;
-    
-//     div.append(city); 
-//     div.append(description); 
-//     div.append(temp); 
-//     div.append(humidity); 
-//     div.append(windSpeed); 
-
-
-//     const weatherDiv = $("#weather-div"); 
-//     weatherDiv.append(div); 
-// }
+// Display previous searches on page load 
+displaySearches();
