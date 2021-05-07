@@ -1,6 +1,3 @@
-// placement of shit
-// local storage and search list 
-
 const today = new Date();  
 const searchInput = document.getElementById("search-input");
 const ul = document.querySelector("ul"); 
